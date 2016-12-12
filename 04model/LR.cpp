@@ -78,11 +78,7 @@ void hess(vector<vector<double> >& X, vector<vector<double> >& sum, vector<doubl
 		sum.push_back(oneRow);
 	}
 
-	float currentTime = omp_get_wtime( ) - startTime; // (clock() - t) / CLOCKS_PER_SEC
-    	cout << "Hess 1.1  finished with " << currentTime << " seconds elapsed." << endl;
 
-
-	int nthreads = omp_get_num_threads();
 
 	deque<int> y_ids(y.size());
 
@@ -92,7 +88,6 @@ void hess(vector<vector<double> >& X, vector<vector<double> >& sum, vector<doubl
 	int one_y;
 
 	int theta_size = theta.size();
-	// #pragma omp parallel private(th_id, one_y) shared(X, sum, theta, theta_size)
     {
     	// init mapper's local sum pool
     	vector<vector<double> > local_sum;
@@ -103,10 +98,6 @@ void hess(vector<vector<double> >& X, vector<vector<double> >& sum, vector<doubl
 			local_sum.push_back(emptyRow);
 		}
 
-    	// th_id = omp_get_thread_num();
-
-    	// #pragma omp master
-    	// {
 		while(!y_ids.empty())
     	{
     		vector<double> X_row_i;
@@ -159,8 +150,6 @@ void hess(vector<vector<double> >& X, vector<vector<double> >& sum, vector<doubl
     // #pragma omp barrier
 	
 
-	currentTime = omp_get_wtime( ) - startTime; // (clock() - t) / CLOCKS_PER_SEC
-    	cout << "Hess 1.2 finished with " << currentTime << " seconds elapsed." << endl;
 
 	for (int k = 0; k < theta.size(); k++){
 		for (int l = 0; l < theta.size(); l++){
@@ -176,13 +165,10 @@ int main(int argc, char* argv[]){
 	// prepare for parallel computing for Map reduce
 
 	int th_id, nthreads;
-	// th_id = omp_get_thread_num();
-	// nthreads = omp_get_num_threads();
 
 	// start timing
-    float startTime = omp_get_wtime( ); //clock();
     float currentTime;
-
+    float startTime;
     // shared variables;
     int n, d;
 
@@ -192,9 +178,7 @@ int main(int argc, char* argv[]){
     //Initialization
 	double lambda = 5;
 
-	// #pragma omp parallel
     {
-		nthreads = omp_get_num_threads();
 		// #pragma omp master
 		{
 			cout << "start running with " << nthreads << " cores." << endl;
@@ -245,11 +229,6 @@ int main(int argc, char* argv[]){
 		X[i].push_back(1);
 	}
 	
-
-	// #pragma omp parallel private(th_id) shared(nthreads, n, d, X, y, lambda)
-	// {
-	// 	#pragma omp master
-	// 	{
 	//Tolerance
 	double epsilon = 1.0e-5;
 	int iteration = 1000;
@@ -263,13 +242,11 @@ int main(int argc, char* argv[]){
 		vector<double> G(d + 1, 0);
 		grad(X, theta, G, y, lambda);
 
-		currentTime = omp_get_wtime( ) - startTime; // (clock() - t) / CLOCKS_PER_SEC
     	cout << "Grad of " <<  itr << " finished with " << currentTime << " seconds elapsed." << endl;
 
 		vector<vector<double> > H;
 		hess(X, H, theta, y, lambda, startTime);
 
-		currentTime = omp_get_wtime( ) - startTime; // (clock() - t) / CLOCKS_PER_SEC
     	cout << "Hess of " <<  itr << " finished with " << currentTime << " seconds elapsed." << endl;
 
 		VectorXd x(d + 1), b(d + 1);
@@ -297,13 +274,9 @@ int main(int argc, char* argv[]){
 		double obj1 = obj(X, theta, y, lambda);
 		double obj2 = obj(X, theta2, y, lambda);
 		double delta = abs(obj1 - obj2);
-		currentTime = omp_get_wtime( ) - startTime; // (clock() - t) / CLOCKS_PER_SEC
-    	cout << "round " <<  itr << " finished with " << currentTime << " seconds elapsed." << endl;
-		cout << std::scientific << std::setprecision(10) << obj1 << endl;
 		if (delta < epsilon) break;
 	}
 
-	currentTime = omp_get_wtime( ) - startTime; // (clock() - t) / CLOCKS_PER_SEC
     cout << "The program finished with "<< currentTime << " seconds elapsed." << endl;
 
 	return 0;
