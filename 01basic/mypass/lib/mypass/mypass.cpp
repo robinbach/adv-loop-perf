@@ -250,16 +250,20 @@ namespace {
 			// Output section
 			//FuncName,DynOpCount,%IALU,%FALU,%MEM,%Biased-Branch,%Unbiased-Branch,%Oth
 			// errs().write_escaped(F.getName()) << ",";
-			errs() << "Loop " << head << " start: " << ":";
+			errs() << "Loop " << head << " start: ";
 			errs() << opTotalSum << ",";
 			errs() << loopiterations << ",";
-			errs() << 1.0f * intALUSum/opTotalSum << ",";
-			errs() << 1.0f * flALUCount/opTotalSum << ",";
-			errs() << 1.0f * memOpCount/opTotalSum << ",";
-			errs() << 1.0f * biasCount/opTotalSum << ",";
-			errs() << 1.0f * unbiasCount/opTotalSum << ",";
-			errs() << 1.0f * otherOps/opTotalSum << "\n";
-
+			// errs() << 1.0f * intALUSum/opTotalSum << ",";
+			// errs() << 1.0f * flALUCount/opTotalSum << ",";
+			// errs() << 1.0f * memOpCount/opTotalSum << ",";
+			// errs() << 1.0f * biasCount/opTotalSum << ",";
+			// errs() << 1.0f * unbiasCount/opTotalSum << ",";
+			// errs() << 1.0f * otherOps/opTotalSum << "\n";
+			errs() << format("%f,%f,%f,%f,%f,",
+				1.0f * intALUSum/opTotalSum, 1.0f * flALUCount/opTotalSum, 
+				1.0f * memOpCount/opTotalSum, 1.0f * biasCount/opTotalSum, 
+				1.0f * unbiasCount/opTotalSum);
+			errs() << format("%f\n", 1.0f * otherOps/opTotalSum);
 			// part 1: basic profiler end.
 
 
