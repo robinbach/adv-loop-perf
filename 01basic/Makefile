@@ -38,11 +38,11 @@
 
 # fname=blackscholes
 # type=cpp
-# input=1 6
+# input=1 4096
 
 fname=streamcluster
 type=cpp
-input=2 3 10 19020 10000 2000 magic04 output.txt 1 1
+input=2 3 10 10000 10000 2000 magic04 output.txt 1 1
 # run_args="2 3 10 19020 10000 2000 input.txt output.txt ${NTHREADS} 1"
 # fname=test
 # type=cpp

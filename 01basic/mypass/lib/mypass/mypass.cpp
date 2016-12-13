@@ -250,7 +250,7 @@ namespace {
 			// Output section
 			//FuncName,DynOpCount,%IALU,%FALU,%MEM,%Biased-Branch,%Unbiased-Branch,%Oth
 			// errs().write_escaped(F.getName()) << ",";
-			errs() << "Loop " << head << " start: ";
+			errs() << "Loop" << head << ",";
 			errs() << opTotalSum << ",";
 			errs() << loopiterations << ",";
 			// errs() << 1.0f * intALUSum/opTotalSum << ",";
