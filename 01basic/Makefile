@@ -31,11 +31,22 @@
 # #simple
 # fname=simple
 # type=c
-# input=in.txt
+# input=empty.txt
 
-fname=test
+# fname=streamcluster-o
+# type=c
+
+# fname=blackscholes
+# type=cpp
+# input=1 6
+
+fname=streamcluster
 type=cpp
-input=in.txt
+input=2 3 10 19020 10000 2000 magic04 output.txt 1 1
+# run_args="2 3 10 19020 10000 2000 input.txt output.txt ${NTHREADS} 1"
+# fname=test
+# type=cpp
+# input=empty.txt
 
 # #wc
 # fname=wc
@@ -66,12 +77,17 @@ all:
 
 profile:
 	rm -f llvmprof.out
-	clang -emit-llvm $(fname).$(type) -c -o $(fname).bc
+	# clang -emit-llvm $(fname).$(type) -lpthread -c -o $(fname).bc
+	clang -emit-llvm -w $(fname).$(type) -lpthread -c -o $(fname).bc
 	opt -insert-edge-profiling $(fname).bc -o $(fname).profile.bc
 	llc $(fname).profile.bc -o $(fname).profile.s
 	g++ -o $(fname).profile $(fname).profile.s /opt/llvm/Release+Asserts/lib/libprofile_rt.so
-	./$(fname).profile $(input) > out1.txt
+	./$(fname).profile $(input) 
+	echo "Done generating profile"
+	# > out1.txt
 
+update:
+	./$(fname).profile $(input)
 # fname=$1
 
 
@@ -105,7 +121,7 @@ profile:
 # 		{ echo "Failed to opt-load"; exit 1; }	
 
 clean:
-	rm -f test test.bc test.p* test.s test.l* llvmprof.out test.opcstats
+	rm -f $(fname) $(fname).bc $(fname).p* $(fname).s $(fname).l* llvmprof.out $(fname).opcstats
 
 # submit:
 # 	rm -f bestname_hwk1/src/*
